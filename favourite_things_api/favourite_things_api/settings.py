@@ -37,11 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.postgres',
     'django.contrib.staticfiles',
     'django_nose',
     'rest_framework',
     'main',
-    'category'
+    'category',
+    'favourite_thing',
 
 ]
 
@@ -54,7 +56,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=main,category',
+    '--cover-package=main,category,favourite_thing',
     '--cover-html',
 ]
 
