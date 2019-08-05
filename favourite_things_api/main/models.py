@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.contrib.postgres.fields import HStoreField
+from simple_history.models import HistoricalRecords
+
 
 
 # Category Model
@@ -15,12 +17,15 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
+    
+    history = HistoricalRecords()
 
 class FavoriteThing(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     ranking = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     metadata = HStoreField(null=True, blank=True)
+    audit_logs = HStoreField(null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='favourite_things',)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -39,3 +44,5 @@ class FavoriteThing(models.Model):
 
     def __str__(self):
         return self.title
+    
+    history = HistoricalRecords()

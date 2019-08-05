@@ -3,11 +3,11 @@ from django.shortcuts import render
 # Create your views here.
 from main.models import FavoriteThing
 from django.db import IntegrityError
-from main.serializers import FavouriteSerializer
+from main.serializers import FavouriteSerializer, LogSerializer
 from rest_framework import mixins, viewsets 
 from rest_framework import status
 from rest_framework.response import Response
-from django.http import Http404
+from rest_framework.decorators import  action
 from .ranking_helper import reorder_rankings_subtract
 
 
@@ -25,4 +25,10 @@ class FavouriteViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    
+    @action(methods=['GET'],detail=True)
+    def logs(self, request, pk=None):
+        favourites_log = FavoriteThing.history.filter(id=pk)
+        serializer = LogSerializer(
+                 favourites_log, many=True
+            )
+        return Response(serializer.data)
