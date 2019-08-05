@@ -34,6 +34,7 @@ class FavouriteSerializer(serializers.ModelSerializer):
         category = validated_data.get('category')
         rankings_queryset = FavoriteThing.objects.order_by('ranking').filter(category=category)
         existing_ranking = rankings_queryset.filter(ranking=ranking)
+
         if not rankings_queryset and ranking > 1:
             ranking = 1
             validated_data = {**validated_data, 'ranking': ranking}
@@ -54,10 +55,38 @@ class FavouriteSerializer(serializers.ModelSerializer):
 
 
     def update(self,  instance, validated_data):
+        
+        title= validated_data.get('title', instance.title)
+        description= validated_data.get('description', instance.description)
         ranking = validated_data.get('ranking', instance.ranking)
+        metadata = validated_data.get('metadata', instance.metadata)
         category = validated_data.get('category', instance.category)
         rankings_queryset = FavoriteThing.objects.order_by('ranking').filter(category=category)
         existing_ranking = rankings_queryset.filter(ranking=ranking)
+
+
+        data = {
+            'title': title,
+            'description':description,
+            'ranking':ranking,
+            'metadata': metadata,
+            'category': category
+        }
+        
+        instance_data = {
+            'title': instance.title,
+            'description':instance.description,
+            'ranking':instance.ranking,
+            'metadata': instance.metadata,
+            'category': instance.category
+        }
+
+        for key, value in data.items():
+            if instance_data[key] == value:
+                instance_data.pop(key, None)
+
+        instance.audit_logs = instance_data
+        
     
         if ranking >= rankings_queryset.last().ranking + 1:
             ranking = instance.ranking
@@ -80,4 +109,9 @@ class FavouriteSerializer(serializers.ModelSerializer):
         return instance
 
          
+    
+class LogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavoriteThing
+        fields = ['id', 'title', 'description', 'ranking','metadata','category','created_at','updated_at','audit_logs']
     

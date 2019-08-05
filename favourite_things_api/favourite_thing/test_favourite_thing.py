@@ -194,3 +194,11 @@ class FavouriteViewSetTestCase(BaseViewTest):
                     None, {self.favourite_thing_four.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         
+   
+    def test_list_a_favourite_things_pass(self):
+        """
+        GET  to a favourite thing
+        """
+        response = self.client.get(reverse('favourite-detail', None, {self.favourite_thing_one.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+       
