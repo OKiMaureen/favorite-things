@@ -26,8 +26,9 @@ SECRET_KEY = '3&y^5j46snko*^4oh1=dhcr-v*%*gnk8nx8@uwmqquwzz$-a-+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django.contrib.staticfiles',
     'django_nose',
+    'corsheaders',
     'simple_history',
     'rest_framework',
     'main',
@@ -62,6 +64,8 @@ NOSE_ARGS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
