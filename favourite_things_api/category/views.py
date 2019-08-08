@@ -18,6 +18,19 @@ class CategoryViewSet(mixins.CreateModelMixin,
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
+    def create(self, request, *args, **kwargs):
+        data = {'category_name': request.data.get('category_name', '').lower()}
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        category_name = serializer.validated_data.get('category_name')
+
+        category_exists = Category.objects.filter(category_name=category_name)
+        if category_exists:
+            return Response({
+                'message': 'Category already exist'
+            }, status=status.HTTP_409_CONFLICT)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(methods=['GET'],detail=True)
     def favourite_things(self, request, pk=None):
@@ -25,4 +38,5 @@ class CategoryViewSet(mixins.CreateModelMixin,
         serializer = FavouriteSerializer(
                  favourites, many=True
             )
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
