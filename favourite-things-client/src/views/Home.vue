@@ -1,6 +1,6 @@
 <template>
   <div >
-  <NavigationBar />
+  <!-- <NavigationBar link1='Favourite Things' link2='Categories' /> -->
   <div class="bg-overlay">
     <div class="align-center">
       <h3>
@@ -20,18 +20,17 @@
 
 <script>
 // // @ is an alias to /src
-import NavigationBar from '@/components/NavigationBar.vue';
 import CreateCategory from '@/components/CreateCategory.vue';
 
 export default {
-  name: 'home',
+  name: 'Home',
   data() {
     return {
       image: require('../assets/images/favourite-background.jpg'),
     };
   },
   components: {
-    NavigationBar,
+    // NavigationBar,
     CreateCategory,
 
   },

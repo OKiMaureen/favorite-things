@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import axios from 'axios';
 
 export default {
@@ -59,36 +60,47 @@ export default {
       this.handleSubmit();
     },
     makeToast(variant, body) {
-        this.$bvToast.toast(body, {
-          variant: variant,
-          solid: true
-        })
-      },
+      this.$bvToast.toast(body, {
+        variant,
+        solid: true,
+      });
+    },
     handleSubmit() {
       // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
         return;
       }
-      axios
-        .post('category/', this.category)
-        .then((response) => {
-          this.$store.dispatch('createCategory', response.data);
-          if(response.status==201){
-            this.makeToast('success', `Category "${response.data.category_name }" was created successfully`);
+      const getCategories = () => axios.get('category/');
+      const postCategory = () => axios.post('category/', this.category);
+
+      axios.all([getCategories(), postCategory()])
+        .then(axios.spread((categories, category) => {
+          this.$store.dispatch('createCategory', category.data);
+          if (category.status === 201) {
+            this.makeToast('success', `Category "${category.data.category_name}" was created successfully`);
           }
-        })
+        }))
         .catch((error) => {
           this.errors = error.response.data;
-          if(error.response.status==409){
+          if (error.response.status === 409) {
             this.makeToast('danger', 'Category already exists!');
           }
         });
-      
+      axios.get('category/')
+        .then((response) => {
+          this.$store.dispatch('getCategory', response.data);
+        });
+
       // Hide the modal manually
       this.$nextTick(() => {
         this.$refs.modal.hide();
       });
     },
+  },
+  computed: {
+    ...mapGetters([
+      'categories',
+    ]),
   },
 };
 </script>
