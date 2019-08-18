@@ -26,7 +26,7 @@ class FavouriteViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    @action(methods=['GET'],detail=True)
+    @action(methods=['GET'],detail=True, url_name='logs')
     def logs(self, request, pk=None):
         favourites_log = FavoriteThing.history.filter(id=pk)
         change_array = []

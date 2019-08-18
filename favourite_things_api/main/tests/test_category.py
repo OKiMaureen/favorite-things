@@ -17,17 +17,26 @@ class CategoryModelTestCase(BaseViewTest):
 
 
 class CategoryViewSetTestCase(BaseViewTest):
-    def test_create_category_pass(self):
+    def test_create_category_duplicate_category_fail(self):
         """POST to create a Category."""
         data = {
             'category_name': 'place',
         }
         response = self.client.post(reverse('category-list'), data=data)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+       
+        
+        
+    def test_create_category_pass(self):
+        """POST to create a Category."""
+        data = {
+            'category_name': 'school',
+        }
+        response = self.client.post(reverse('category-list'), data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['category_name'], 'place')
+        self.assertEqual(response.data['category_name'], 'school')
         
         
-
 
     def test_list_category(self):
         """LIST categories."""
