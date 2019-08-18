@@ -12,17 +12,27 @@
     >
       <form ref="form" @submit.stop.prevent='handleSubmit'>
         <b-form-group
-          :state='nameState'
           label='Category Name'
           label-for='name-input'
-          invalid-feedback='Category Name is required'
         >
           <b-form-input
-            id='name-input'
-            v-model='category.category_name'
-            :state="nameState"
+            id="example-input-1"
+            name="example-input-1"
+            v-model='$v.category.category_name.$model'
+            :state="$v.category.category_name.$dirty ? !$v.category.category_name.$error : null"
+            aria-describedby="input-1-live-feedback"
             required
           ></b-form-input>
+          <b-form-invalid-feedback
+          id="input-2-live-feedback"
+          v-if="!$v.category.category_name.required" >
+          This is a required field.
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback
+          id="input-2-live-feedback"
+          v-if="!$v.category.category_name.minLength" >
+          Category must have at least {{$v.category.category_name.$params.minLength.min}} letters.
+        </b-form-invalid-feedback>
         </b-form-group>
       </form>
     </b-modal>
@@ -30,10 +40,13 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate';
+import { required, minLength } from 'vuelidate/lib/validators';
 import { mapGetters } from 'vuex';
 import axios from 'axios';
 
 export default {
+  mixins: [validationMixin],
   data() {
     return {
       category: {
@@ -42,6 +55,14 @@ export default {
       nameState: null,
       errors: {},
     };
+  },
+  validations: {
+    category: {
+      category_name: {
+        required,
+        minLength: minLength(3),
+      },
+    },
   },
   methods: {
     checkFormValidity() {
@@ -67,30 +88,31 @@ export default {
     },
     handleSubmit() {
       // Exit when the form isn't valid
+      this.$v.category.$touch();
       if (!this.checkFormValidity()) {
         return;
       }
-      const getCategories = () => axios.get('category/');
-      const postCategory = () => axios.post('category/', this.category);
-
-      axios.all([getCategories(), postCategory()])
-        .then(axios.spread((categories, category) => {
-          this.$store.dispatch('createCategory', category.data);
-          if (category.status === 201) {
-            this.makeToast('success', `Category "${category.data.category_name}" was created successfully`);
+      if (this.$v.$anyError) {
+        return;
+      }
+      axios
+        .post('category/', this.category)
+        .then((response) => {
+          this.$store.dispatch('createCategory', response.data);
+          if (response.status === 201) {
+            this.makeToast(
+              'success',
+              `Category "${response.data.category_name}" was created successfully`,
+            );
           }
-        }))
+          this.$emit('loadCategories');
+        })
         .catch((error) => {
           this.errors = error.response.data;
           if (error.response.status === 409) {
             this.makeToast('danger', 'Category already exists!');
           }
         });
-      axios.get('category/')
-        .then((response) => {
-          this.$store.dispatch('getCategory', response.data);
-        });
-
       // Hide the modal manually
       this.$nextTick(() => {
         this.$refs.modal.hide();
@@ -98,16 +120,14 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'categories',
-    ]),
+    ...mapGetters(['categories']),
   },
 };
 </script>
 <style scoped>
 .btn-primary {
-    color: #fff;
-    background-color: #07575b;
-    border-color: #07575b;
+  color: #fff;
+  background-color: #07575b;
+  border-color: #07575b;
 }
 </style>
