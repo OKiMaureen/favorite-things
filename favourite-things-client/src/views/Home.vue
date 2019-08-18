@@ -9,18 +9,20 @@
       <p>
         Categorize and rank your favourite things to your heart desires!
       </p>
-      <b-button variant="outline-primary" v-b-modal.modal-prevent-closing >
-        Create Category
+      <b-button variant="outline-primary" v-b-modal.modal-scrollable >
+        Create Favourite Thing
       </b-button>
     </div>
   </div>
   <CreateCategory />
+  <CreateFavourite />
   </div>
 </template>
 
 <script>
 // // @ is an alias to /src
 import CreateCategory from '@/components/CreateCategory.vue';
+import CreateFavourite from '@/components/CreateFavourite.vue';
 
 export default {
   name: 'Home',
@@ -30,8 +32,8 @@ export default {
     };
   },
   components: {
-    // NavigationBar,
     CreateCategory,
+    CreateFavourite,
 
   },
 };

@@ -3,30 +3,63 @@
       <div>
       <b-card-group deck >
          <b-card align="center" v-for="(category, index) in categories" :key="index">
-        <b-card-title>{{category.category_name}}</b-card-title>
-          <a href="#" class="card-link">View Favourites</a>
+        <b-card-title class="capitalize">{{category.category_name}}</b-card-title>
+           <b-button @click="viewFavourites(category.id)">View Favourites</b-button>
       </b-card>
-
       </b-card-group>
+      <div v-show="showAlert" class="alert">
+      No categories created yet!
       </div>
-      <CreateCategory />
+      </div>
+      <CreateCategory 
+       @loadCategories="()=>loadCategories()"/>
+      <CreateFavourite />
     </div>
 </template>
 <script>
 import { mapGetters } from 'vuex';
 import axios from 'axios';
 import CreateCategory from '@/components/CreateCategory.vue';
-// import Card from '@/components/Card.vue';
+import CreateFavourite from '@/components/CreateFavourite.vue';
 export default {
   name: 'Categories',
   components: {
     CreateCategory,
+    CreateFavourite,
   },
-  mounted() {
-    axios.get('category/')
+  data() {
+    return {
+      showAlert:false,
+    }
+  },
+  methods: {
+    viewFavourites(id) {
+      this.$router.push({ name: 'categoryFavourites', params: { id} });
+    },
+    loadCategories(){
+     axios.get('category/')
       .then((response) => {
-        this.$store.dispatch('getCategory', response.data);
+        if(response.data === undefined || response.data === 0 ){
+          this.showAlert = true;
+        }
+        this.$store.dispatch('getCategories', response.data);
       });
+    }
+
+  },
+  created() {
+    this.$store.watch(
+    (state)=>{
+      return this.$store.state.categories 
+    },
+    (newValue, oldValue)=>{
+      if(oldValue.length !== newValue.length){
+         this.loadCategories()
+      }
+  },
+  )
+    this.loadCategories()
+    
   },
   computed: {
     ...mapGetters([
@@ -39,8 +72,6 @@ export default {
 @media (min-width: 576px){
   .card-deck{
   margin-top: 1px !important;
-  /* margin-right: 30px; */
-  /* margin-left: 70px !important; */
 }
 .card{
   margin-top: 40px !important;
@@ -60,9 +91,7 @@ export default {
   flex-direction: column;
 }
 .card-deck {
-    /* margin-left: 20px !important; */
     margin-top: 60px !important;
-    /* margin-right: 30px; */
     display: flex !important;
 }
 .card-body {
@@ -79,5 +108,14 @@ a.card-link{
   text-align: center;
   padding-left:25px;
   padding-right:25px;
+}
+.capitalize{
+  text-transform: capitalize
+}
+.alert{
+  font-size: 20px;
+}
+button.btn.btn-info{
+  background-color: none !important;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <NavigationBar link1='Favourite Things' link2='Categories' />
-    <router-view/>
+    <router-view :key="$route.fullPath"></router-view>
   </div>
 </template>
 <script>

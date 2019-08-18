@@ -3,14 +3,9 @@ from django.db.utils import IntegrityError
 from .models import Category, FavoriteThing
 from favourite_thing.ranking_helper import reorder_rankings_subtract
 
-class CategorySerializer(serializers.ModelSerializer):
-    favourite_things = serializers.HyperlinkedRelatedField(many=True, read_only=True,  view_name='favourite-detail')
-    class Meta:
-        model = Category
-        fields = ['id', 'category_name', 'created_at', 'updated_at', 'favourite_things']
-
-
 class FavouriteSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(), slug_field='category_name')
     class Meta:
         model = FavoriteThing
         fields = ['id', 'title', 'description', 'ranking','metadata','category','created_at','updated_at']
@@ -44,48 +39,26 @@ class FavouriteSerializer(serializers.ModelSerializer):
             favorite_thing = FavoriteThing.objects.create(**validated_data)
             return favorite_thing
         except IntegrityError:
-            raise serializers.ValidationError('The Favorite-thing already exists for this category')
+            raise serializers.ValidationError('The Favorite thing already exists for this category')
 
 
     def update(self,  instance, validated_data):
         
-        title= validated_data.get('title', instance.title)
-        description= validated_data.get('description', instance.description)
         ranking = validated_data.get('ranking', instance.ranking)
-        metadata = validated_data.get('metadata', instance.metadata)
         category = validated_data.get('category', instance.category)
         rankings_queryset = FavoriteThing.objects.order_by('ranking').filter(category=category)
         existing_ranking = rankings_queryset.filter(ranking=ranking)
-
-
-        data = {
-            'title': title,
-            'description':description,
-            'ranking':ranking,
-            'metadata': metadata,
-            'category': category
-        }
         
-        instance_data = {
-            'title': instance.title,
-            'description':instance.description,
-            'ranking':instance.ranking,
-            'metadata': instance.metadata,
-            'category': instance.category
-        }
+        if not rankings_queryset and ranking > 1:
+            ranking = 1
+            validated_data = {**validated_data, 'ranking': ranking}
 
-        for key, value in data.items():
-            if instance_data[key] == value:
-                instance_data.pop(key, None)
-
-        instance.audit_logs = instance_data
-        
-    
-        if ranking >= rankings_queryset.last().ranking + 1:
+        if rankings_queryset and ranking >= rankings_queryset.last().ranking + 1:
             ranking = instance.ranking
             validated_data = {**validated_data, 'ranking': ranking}
 
         if existing_ranking:
+        
             if ranking > instance.ranking:
                 next_rankings = rankings_queryset.filter(
                     ranking__range=(instance.ranking+1, ranking))
@@ -98,13 +71,19 @@ class FavouriteSerializer(serializers.ModelSerializer):
 
         for name, value in validated_data.items():
             setattr(instance, name, value)
-        instance.save()
-        return instance
+       
+        try:
+            instance.save()
+            return instance
+        except IntegrityError:
+            raise serializers.ValidationError('The Favourite thing already exists for this category')
 
-         
-    
-class LogSerializer(serializers.ModelSerializer):
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    favourite_things = FavouriteSerializer(many=True, read_only=True)
+
     class Meta:
-        model = FavoriteThing
-        fields = ['id', 'title', 'description', 'ranking','metadata','category','created_at','updated_at','audit_logs']
+        model = Category
+        fields = ['id', 'category_name', 'created_at', 'updated_at', 'favourite_things']
     

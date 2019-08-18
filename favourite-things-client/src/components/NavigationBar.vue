@@ -6,7 +6,7 @@
       <b-collapse id="nav-collapse" is-nav>
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item href="#" >{{link1}}</b-nav-item>
+          <b-nav-item to="/favourites" >{{link1}}</b-nav-item>
           <b-nav-item to="/categories" right>{{link2}}</b-nav-item>
           <b-nav-item href="#" right>
           <b-button
@@ -17,6 +17,7 @@
           <b-button
           variant="outline-primary"
           size="sm"
+          v-b-modal.modal-scrollable
           type="submit">
           Create Favourite Thing
           </b-button>
@@ -25,7 +26,7 @@
       </b-collapse>
     </b-navbar>
   </div>
-</template>
+  </template>
 
 <script>
 export default {
