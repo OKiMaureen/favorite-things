@@ -23,7 +23,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"nokia",
             "ranking": 1,
-            "category":self.category_one.id,
+            "category":self.category_one.category_name,
             }
        
         response = self.client.post(reverse('favourite-list'), data)
@@ -36,7 +36,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"samsung",
             "ranking": 1,
-            "category":self.category_one.id,
+            "category":self.category_one.category_name,
             }
        
         response = self.client.post(reverse('favourite-list'), data)
@@ -51,7 +51,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"techno",
             "ranking": 100,
-            "category":self.category_one.id,
+            "category":self.category_one.category_name,
             }
         
         response = self.client.post(reverse('favourite-list'), data)
@@ -66,7 +66,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"techno",
             "ranking": 100,
-            "category":self.category_two.id,
+            "category":self.category_two.category_name,
             }
         
         response = self.client.post(reverse('favourite-list'), data)
@@ -81,10 +81,12 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"techno",
             "ranking": 100,
-            "category":self.category_three.id,
+            "category":self.category_three.category_name,
             }
         
         response = self.client.post(reverse('favourite-list'), data)
+
+        print('#################', response.data)
         self.assertEqual(response.data['ranking'], 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -95,7 +97,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"finix",
             "ranking": 1,
-            "category":self.category_one.id,
+            "category":self.category_one.category_name,
             }
         
         response = self.client.post(reverse('favourite-list'), data)
@@ -126,7 +128,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"infinix",
             "ranking": 1,
-            "category":self.category_one.id,
+            "category":self.category_one.category_name,
             }
         response = self.client.put(
             reverse('favourite-detail',
@@ -142,7 +144,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"infinix",
             "ranking": 3,
-            "category":self.category_one.id,
+            "category":self.category_one.category_name,
             }
         response = self.client.put(
             reverse('favourite-detail',
@@ -158,7 +160,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"infinix",
             "ranking": 2,
-            "category":self.category_one.id,
+            "category":self.category_one.category_name,
             }
         response = self.client.put(
             reverse('favourite-detail',
@@ -175,7 +177,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         data = {
             "title":"infinix",
             "ranking": 1,
-            "category":self.category_one.id,
+            "category":self.category_one.category_name,
             }
         response = self.client.put(
             reverse('favourite-detail',
@@ -201,4 +203,15 @@ class FavouriteViewSetTestCase(BaseViewTest):
         """
         response = self.client.get(reverse('favourite-detail', None, {self.favourite_thing_one.pk}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_favorite_things_logs(self):
+        """
+        GET a favourite thing logs
+        """
        
+        response = self.client.get(
+            reverse('favourite-logs',
+                    None, {self.favourite_thing_four.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['logs'], [])
+        

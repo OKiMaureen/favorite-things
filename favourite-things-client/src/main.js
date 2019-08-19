@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 
-const baseUrl = 'http://127.0.0.1:8000/api/v1/';
+const baseUrl = 'http://ec2-3-84-41-93.compute-1.amazonaws.com:8000/api/v1/';
 axios.defaults.baseURL = baseUrl;
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
