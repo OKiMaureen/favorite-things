@@ -49,17 +49,21 @@ echo "Installing nodejs"
 }
 
 echo "Installing client dependencies"
+{
 cd favourite-things-client && npm install && cd -
 echo "Dependencies installed :)"
+}
 || {
     echo "Failed"
 }
 
 echo "building client"
+{
 cd favourite-things-client && npm run build && cd -
 echo "client built :)"
+}
 || {
-    echo "Failed build"
+    echo "Failed client build"
 }
 
 
@@ -68,6 +72,7 @@ sudo apt-get install nginx -y
 sudo touch /etc/nginx/sites-available/django.conf
 sudo cp django.conf /etc/nginx/sites-available/django.conf
 sudo ln -s /etc/nginx/sites-available/django.conf /etc/nginx/sites-enabled/django.conf
+
 
 
 sudo nginx -t
