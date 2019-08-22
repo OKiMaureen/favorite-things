@@ -49,17 +49,16 @@ export default {
   },
   created() {
     this.$store.watch(
-    (state)=>{
-      return this.$store.state.categories 
+    (state) => {
+        return this.$store.state.categories;
     },
-    (newValue, oldValue)=>{
-      if(oldValue.length !== newValue.length){
-         this.loadCategories()
-      }
-  },
-  )
-    this.loadCategories()
-    
+      (newValue, oldValue) => {
+        if (oldValue.length !== newValue.length) {
+          this.loadCategories();
+        }
+      },
+    );
+    this.loadCategories();
   },
   computed: {
     ...mapGetters([
