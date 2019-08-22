@@ -52,8 +52,7 @@ echo "Installing client dependencies"
 {
 cd favourite-things-client && npm install && cd -
 echo "Dependencies installed :)"
-}
-|| {
+} || {
     echo "Failed"
 }
 
@@ -61,8 +60,7 @@ echo "building client"
 {
 cd favourite-things-client && npm run build && cd -
 echo "client built :)"
-}
-|| {
+} || {
     echo "Failed client build"
 }
 
