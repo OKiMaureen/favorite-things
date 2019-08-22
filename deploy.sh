@@ -25,13 +25,12 @@ echo "Installing pipenv..."
 }
 
 echo "Installing server dependencies"
-  cd favorite-things &&  pipenv run pipenv install -r  requirements.txt
-  cd favourite_things_api && pipenv run python manage.py migrate && pipenv run python manage.py loaddata category_fixtures.json cd -
+  pipenv run pipenv install -r  requirements.txt
+  cd favourite_things_api && pipenv run python manage.py migrate && pipenv run python manage.py loaddata category_fixtures.json
 echo "Dependencies installed and defaults added"
 
 echo "Starting gunicorn"
 {  
-  cd favourite_things_api && pipenv run pipenv install gunicorn  && sudo apt install gunicorn
   gunicorn --bind 0.0.0.0:8000 favourite_things_api.wsgi:application --daemon && cd -
   echo "gunicorn running"
 } || {
@@ -52,17 +51,24 @@ echo "Installing nodejs"
 echo "Installing client dependencies"
 cd favourite-things-client && npm install && cd -
 echo "Dependencies installed :)"
+|| {
+    echo "Failed"
+}
 
 echo "building client"
 cd favourite-things-client && npm run build && cd -
 echo "client built :)"
+|| {
+    echo "Failed build"
+}
 
 
 echo "Installing Nginx"
 sudo apt-get install nginx -y
 sudo touch /etc/nginx/sites-available/django.conf
 sudo cp django.conf /etc/nginx/sites-available/django.conf
-sudo ln -S /etc/nginx/sites-available/django.conf /etc/nginx/sites-enabled/django.conf
+sudo ln -s /etc/nginx/sites-available/django.conf /etc/nginx/sites-enabled/django.conf
+
 
 sudo nginx -t
 sudo service nginx restart
