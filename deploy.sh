@@ -32,7 +32,7 @@ echo "Dependencies installed and defaults added"
 echo "Starting gunicorn"
 {  
   cd favourite_things_api && pipenv run pipenv install gunicorn  && sudo apt install gunicorn
-  gunicorn --bind 0.0.0.0:8000 favourite_things_api.wsgi:application --daemon cd -
+  gunicorn --bind 0.0.0.0:8000 favourite_things_api.wsgi:application --daemon && cd -
   echo "gunicorn running"
 } || {
   echo "gunicorn not running"
