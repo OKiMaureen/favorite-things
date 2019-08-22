@@ -73,6 +73,8 @@ sudo touch /etc/nginx/sites-available/django.conf
 sudo cp django.conf /etc/nginx/sites-available/django.conf
 sudo ln -s /etc/nginx/sites-available/django.conf /etc/nginx/sites-enabled/django.conf
 
+
+
 sudo nginx -t
 sudo service nginx restart
 
