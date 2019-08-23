@@ -1,12 +1,15 @@
 version: 2
 jobs:
   build:
-    Machine:
+    environment:
+      CC_TEST_REPORTER_ID:8644b073c24719bf93f445f9c7bbe0c7019a88702084ae1470a276f0a95eb4fb
+    docker:
       - image: circleci/python:3.7
+    working_directory: ~/repo
     steps:
       - checkout
       - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          key: deps1-{{ .Branch }}-{{ checksum "Pipfile.lock"  }}
       - run:
           command: |
              sudo pip install pipenv
@@ -19,9 +22,16 @@ jobs:
             - "/usr/local/bin"
             - "/usr/local/lib/python3.7/site-packages"
       - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
           name: Running tests
           command: |
-             pipenv run python manage.py test
+             pipenv run python favourite_things_api/manage.py test
+      - store_test_results:
+          path: test-results
       - store_artifacts:
-          path: test-reports/
-          destination: python_app
+          path: test-results
+          destination: tr1

@@ -50,7 +50,7 @@ class FavouriteViewSetTestCase(BaseViewTest):
         """
         data = {
             "title":"techno",
-            "ranking": 100,
+            "ranking": 200,
             "category":self.category_one.category_name,
             }
         
