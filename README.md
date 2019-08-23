@@ -143,17 +143,12 @@ Run the deployment script using the command below
 
 - When prompted with 'Deployment Succesful', Your EC2 instance is ready and you can visit the deployed app using your address.
 
-# Application Built With
-- Vuejs
-- Django and Django Rest Framework
-- Postgres
-
-# Application Hosted on
+## Application Hosted on
 - AWS
 
-# Author
+## Author
 - Maureen Okafor
 
-# License
+## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
 
