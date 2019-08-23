@@ -2,7 +2,7 @@
 
 sudo apt-get update && sudo apt-get upgrade -y
 
-echo "Starting python installation...."
+echo "Python installation started...."
 {
   export LC_ALL=C
   sudo apt-get install python-pip -y
@@ -11,67 +11,69 @@ echo "Starting python installation...."
   sudo apt-get install python3.7 -y
   sudo apt-get install libpq-dev
   sudo apt-get install python3.7-dev
-	echo "Python Installed :)"
+	echo "Python Installed"
 } || {
 	echo "Python installation failed"
 }
 
-echo "Installing pipenv..."
+echo "Pipenv installation started..."
 { 
 	pip install pipenv
-	echo "Pipenv installed :)"
+	echo "Pipenv installed"
 } || {
 	echo "Pipenv installation failed"
 }
 
-echo "Installing server dependencies"
+echo "Server dependencies installation started..."
   pipenv run pipenv install -r  requirements.txt
   cd favourite_things_api && pipenv run python manage.py migrate && pipenv run python manage.py loaddata category_fixtures.json
-echo "Dependencies installed and defaults added"
+echo "Server dependencies installed"
 
-echo "Starting gunicorn"
+echo "Gunicorn starting"
 {  
   gunicorn --bind 0.0.0.0:8000 favourite_things_api.wsgi:application --daemon && cd -
-  echo "gunicorn running"
+  echo "Gunicorn started...."
 } || {
-  echo "gunicorn not running"
+  echo "Gunicorn not started"
 }
 
 
-echo "Installing nodejs"
+echo "Nodejs installation started...."
 {   
     sudo apt-get install curl
 	curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
     sudo apt-get install nodejs
-	echo "Node installed :)"
+	echo "Node installed"
 } || {
 	echo "Nodejs installation failed"
 }
 
-echo "Installing client dependencies"
+echo "Client dependencies installation started..."
 {
 cd favourite-things-client && npm install && cd -
-echo "Dependencies installed :)"
+echo "Client dependencies installed"
 } || {
-    echo "Failed"
+    echo "Client dependencies installation failed"
 }
 
-echo "building client"
+echo "Client build started...."
 {
 cd favourite-things-client && npm run build && cd -
-echo "client built :)"
+echo "Client built"
 } || {
-    echo "Failed client build"
+    echo "Client build failed"
 }
 
 
-echo "Installing Nginx"
+echo "Nginx installation started...."
 sudo apt-get install nginx -y
 sudo touch /etc/nginx/sites-available/django.conf
 sudo cp django.conf /etc/nginx/sites-available/django.conf
 sudo ln -s /etc/nginx/sites-available/django.conf /etc/nginx/sites-enabled/django.conf
-
-
 sudo nginx -t
 sudo service nginx restart
+echo "Nginx started and Deployment Succesful"
+} || {
+    echo "Deployment failed"
+}
 
