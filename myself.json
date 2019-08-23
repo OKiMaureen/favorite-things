@@ -1,0 +1,33 @@
+{
+    "Name": "Maureen Eloho Okafor",
+    "Nationality": "Nigerian",
+    "Programming_languages": [
+      "Python",
+      "Javascript"
+    ],
+    "Frontend Technologies": [
+      "Angular",
+      "Vue",
+      "React"
+    ],
+    "Backend Technologies": [
+        "Node/Express",
+        "Django",
+        "Django Rest Framework",
+        "Firebase",
+        "Flask",
+        "Postgres",
+        "Mysql"
+      ],
+    "Work Tools": [
+        "Slack",
+        "Zoom",
+        "Git/Github",
+        "Trello"
+    ],
+    "Experience": {
+      "Javascript": "2 years",
+      "Python": "1 year"
+    },
+    "Fun_fact": "I love to bake and watch sci-fi movies alot"
+}

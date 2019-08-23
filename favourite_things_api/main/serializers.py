@@ -43,7 +43,6 @@ class FavouriteSerializer(serializers.ModelSerializer):
 
 
     def update(self,  instance, validated_data):
-        
         ranking = validated_data.get('ranking', instance.ranking)
         category = validated_data.get('category', instance.category)
         rankings_queryset = FavoriteThing.objects.order_by('ranking').filter(category=category)
