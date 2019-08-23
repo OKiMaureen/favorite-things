@@ -1,11 +1,9 @@
 version: 2
 jobs:
   build:
-    environment:
-      CC_TEST_REPORTER_ID:8644b073c24719bf93f445f9c7bbe0c7019a88702084ae1470a276f0a95eb4fb
+    working_directory: ~/repo
     docker:
       - image: circleci/python:3.7
-    working_directory: ~/repo
     steps:
       - checkout
       - restore_cache:
@@ -29,7 +27,7 @@ jobs:
       - run:
           name: Running tests
           command: |
-             pipenv run python favourite_things_api/manage.py test
+            pipenv run python favourite_things_api/manage.py test
       - store_test_results:
           path: test-results
       - store_artifacts:
